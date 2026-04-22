@@ -27,6 +27,118 @@ Berikut adalah beberapa tampilan alur sistem dari API ini berdasarkan *use case*
 
 ---
 
+## 📐 Arsitektur Sistem (UML & Flow)
+
+Berikut adalah visualisasi arsitektur dan alur sistem. (GitHub sudah mendungkung native format Mermaid `mermaid` sehingga diagram langsung terlihat).
+
+### 1. Arsitektur Clean Architecture
+Alur komunikasi antara layer dalam arsitektur backend.
+```mermaid
+graph TD
+    Client[Client App / Postman] -->|HTTP Request| Router[Router / Gin]
+    Router -->|Route Request| Handler[Handler Layer]
+    Handler -->|Parse & Validasi| Service[Service Layer]
+    Service -->|Business Logic| Repo[Repository Layer]
+    Repo -->|SQL Query| DB[(PostgreSQL)]
+    DB -->|Data| Repo
+    Repo -->|Model/Entity| Service
+    Service -->|DTO| Handler
+    Handler -->|JSON Response| Client
+```
+*Penjelasan*: Permintaan dari klien masuk melalui Router, diteruskan ke Handler untuk validasi input. Handler memanggil Service yang memproses logika bisnis. Jika butuh data, Service memanggil Repository yang berinteraksi langsung dengan Database.
+
+### 2. Entity Relationship Diagram (ERD)
+Struktur database dan relasi antar entitas.
+```mermaid
+erDiagram
+    USERS ||--o{ LAWYERS : is
+    USERS ||--o{ CLIENTS : is
+    LAWYERS ||--o{ SCHEDULES : has
+    CLIENTS ||--o{ CONSULTATIONS : books
+    LAWYERS ||--o{ CONSULTATIONS : receives
+    CONSULTATIONS ||--|| PAYMENTS : has
+    CONSULTATIONS ||--o{ CHAT_MESSAGES : contains
+    CONSULTATIONS ||--o{ REVIEWS : gets
+    USERS ||--o{ DOCUMENTS : uploads
+
+    USERS {
+        UUID id PK
+        string email
+        string role
+        string full_name
+    }
+    LAWYERS {
+        UUID id PK
+        UUID user_id FK
+        string license_number
+        float consultation_fee_per_hour
+    }
+    CLIENTS {
+        UUID id PK
+        UUID user_id FK
+        date date_of_birth
+    }
+    CONSULTATIONS {
+        UUID id PK
+        UUID client_id FK
+        UUID lawyer_id FK
+        string status
+        string schedule_date
+    }
+    PAYMENTS {
+        UUID id PK
+        UUID consultation_id FK
+        float amount
+        string payment_status
+    }
+    CHAT_MESSAGES {
+        UUID id PK
+        UUID consultation_id FK
+        UUID sender_id FK
+        string content
+    }
+```
+*Penjelasan*: `USERS` adalah tabel utama (bisa sebagai Client atau Lawyer). Klien dapat melakukan `CONSULTATIONS` (pemesanan konsultasi) ke Lawyer. Setiap Konsultasi memiliki 1 `PAYMENTS` dan bisa berisi banyak `CHAT_MESSAGES` (jika live chat) dan diakhiri dengan 1 `REVIEWS`.
+
+### 3. Use Case Diagram
+Fitur-fitur utama yang dapat diakses oleh setiap aktor.
+```mermaid
+flowchart LR
+    %% Actors
+    C((Client))
+    L((Lawyer))
+    A((Admin))
+
+    %% Use Cases
+    subcase System[Sistem Konsultasi Hukum]
+        Register(Registrasi & Login)
+        Search(Cari Lawyer)
+        Book(Booking Konsultasi)
+        Pay(Upload Bukti Pembayaran)
+        Verify(Verifikasi Pembayaran)
+        Chat(Chatting/Konsultasi)
+        Review(Beri Ulasan)
+        Schedule(Atur Jadwal)
+    end
+
+    C --> Register
+    L --> Register
+    C --> Search
+    C --> Book
+    C --> Pay
+    A --> Verify
+    C --> Chat
+    L --> Chat
+    C --> Review
+    L --> Schedule
+```
+*Penjelasan*: 
+- **Client**: Bisa mencari pengacara, melakukan pemesanan (booking), mengunggah bukti pembayaran, melakukan konsultasi (chat), dan memberikan ulasan.
+- **Lawyer**: Bisa mengatur jadwal ketersediaannya, merespons chat konsultasi dari klien.
+- **Admin**: Bertugas memverifikasi bukti pembayaran yang diunggah oleh klien.
+
+---
+
 ## 🏗️ Struktur Proyek
 
 ```
