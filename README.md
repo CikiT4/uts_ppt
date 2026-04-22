@@ -131,6 +131,7 @@ flowchart LR
     L --> Chat
     C --> Review
     L --> Schedule
+```
 
 ### 4. Class Diagram
 Struktur class/model utama dan method-method penting dalam domain bisnis.
