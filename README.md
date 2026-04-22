@@ -110,7 +110,7 @@ flowchart LR
     A((Admin))
 
     %% Use Cases
-    subcase System[Sistem Konsultasi Hukum]
+    subgraph System[Sistem Konsultasi Hukum]
         Register(Registrasi & Login)
         Search(Cari Lawyer)
         Book(Booking Konsultasi)
@@ -131,6 +131,70 @@ flowchart LR
     L --> Chat
     C --> Review
     L --> Schedule
+
+### 4. Class Diagram
+Struktur class/model utama dan method-method penting dalam domain bisnis.
+```mermaid
+classDiagram
+    class User {
+        +UUID id
+        +String email
+        +String role
+        +String full_name
+        +login()
+        +register()
+    }
+    class Lawyer {
+        +UUID id
+        +String license_number
+        +float consultation_fee_per_hour
+        +updateProfile()
+        +setAvailability()
+    }
+    class Client {
+        +UUID id
+        +Date date_of_birth
+        +String address
+    }
+    class Consultation {
+        +UUID id
+        +String status
+        +String schedule_date
+        +String case_description
+        +book()
+        +confirm()
+        +complete()
+        +cancel()
+    }
+    class Payment {
+        +UUID id
+        +float amount
+        +String payment_status
+        +uploadProof()
+        +verify()
+    }
+    class ChatMessage {
+        +UUID id
+        +String content
+        +String message_type
+        +sendMessage()
+    }
+    class Review {
+        +UUID id
+        +int rating
+        +String comment
+        +createReview()
+    }
+
+    User <|-- Lawyer : extends
+    User <|-- Client : extends
+    Client "1" -- "0..*" Consultation : books
+    Lawyer "1" -- "0..*" Consultation : receives
+    Consultation "1" *-- "1" Payment : has
+    Consultation "1" *-- "0..*" ChatMessage : contains
+    Consultation "1" *-- "1" Review : gets
+```
+*Penjelasan*: Class Diagram ini menunjukkan pewarisan (inheritance) dimana Lawyer dan Client merupakan perpanjangan (extends) dari User. Relasi komposisi/agregasi juga terlihat jelas di mana sebuah Konsultasi memiliki Pembayaran, Pesan Chat, dan Ulasan.
 ```
 *Penjelasan*: 
 - **Client**: Bisa mencari pengacara, melakukan pemesanan (booking), mengunggah bukti pembayaran, melakukan konsultasi (chat), dan memberikan ulasan.
