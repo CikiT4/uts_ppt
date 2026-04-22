@@ -196,7 +196,6 @@ classDiagram
     Consultation "1" *-- "1" Review : gets
 ```
 *Penjelasan*: Class Diagram ini menunjukkan pewarisan (inheritance) dimana Lawyer dan Client merupakan perpanjangan (extends) dari User. Relasi komposisi/agregasi juga terlihat jelas di mana sebuah Konsultasi memiliki Pembayaran, Pesan Chat, dan Ulasan.
-```
 *Penjelasan*: 
 - **Client**: Bisa mencari pengacara, melakukan pemesanan (booking), mengunggah bukti pembayaran, melakukan konsultasi (chat), dan memberikan ulasan.
 - **Lawyer**: Bisa mengatur jadwal ketersediaannya, merespons chat konsultasi dari klien.
