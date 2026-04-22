@@ -102,36 +102,7 @@ erDiagram
 
 ### 3. Use Case Diagram
 Fitur-fitur utama yang dapat diakses oleh setiap aktor.
-```mermaid
-flowchart LR
-    %% Actors
-    C((Client))
-    L((Lawyer))
-    A((Admin))
-
-    %% Use Cases
-    subgraph System[Sistem Konsultasi Hukum]
-        Register(Registrasi & Login)
-        Search(Cari Lawyer)
-        Book(Booking Konsultasi)
-        Pay(Upload Bukti Pembayaran)
-        Verify(Verifikasi Pembayaran)
-        Chat(Chatting/Konsultasi)
-        Review(Beri Ulasan)
-        Schedule(Atur Jadwal)
-    end
-
-    C --> Register
-    L --> Register
-    C --> Search
-    C --> Book
-    C --> Pay
-    A --> Verify
-    C --> Chat
-    L --> Chat
-    C --> Review
-    L --> Schedule
-```
+![Use Case Diagram](Use%20case%20diagram.jpeg)
 
 ### 4. Class Diagram
 Struktur class/model utama dan method-method penting dalam domain bisnis.
